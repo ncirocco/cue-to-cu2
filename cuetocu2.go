@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -25,7 +24,7 @@ type index struct {
 // Generate creates a cu2 file in the given destination using the given cue file as base
 func Generate(cuePath string, destination string) error {
 	bin, err := getCueBinPath(cuePath)
-	binPath := filepath.Join(path.Dir(cuePath), bin)
+	binPath := filepath.Join(filepath.Dir(cuePath), bin)
 
 	if err != nil {
 		return err
@@ -52,7 +51,7 @@ func Generate(cuePath string, destination string) error {
 
 	_ = os.MkdirAll(destination, os.ModePerm)
 
-	cueName := path.Base(cuePath)[0:len(path.Base(cuePath))-len(filepath.Ext(path.Base(cuePath)))] + ".cu2"
+	cueName := filepath.Base(cuePath)[0:len(filepath.Base(cuePath))-len(filepath.Ext(filepath.Base(cuePath)))] + ".cu2"
 	cu2Path := filepath.Join(destination, cueName)
 	f, err := os.Create(cu2Path)
 	if err != nil {
