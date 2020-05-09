@@ -10,6 +10,9 @@ import (
 	"strings"
 )
 
+// ErrorMultiBin attempt to be generated a cu2 for a cue file with multiplebin
+var ErrorMultiBin = errors.New("Cu2 can not be created for multibin cue files, merge your bin files first")
+
 type track struct {
 	ID        int
 	TrackType string
@@ -109,7 +112,7 @@ func getCueBinPath(cuePath string) (string, error) {
 		}
 	}
 
-	return "", errors.New("No bin reference was found in the given cue file")
+	return "", errors.New("No file reference was found in the given cue sheet")
 }
 
 func cueToCueMap(cuePath string) ([]track, error) {
@@ -121,15 +124,16 @@ func cueToCueMap(cuePath string) ([]track, error) {
 
 	var tracks []track
 	scanner := bufio.NewScanner(f)
+	files := 0
+
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
-		files := 0
 
 		switch fields[0] {
 		case "FILE":
 			files++
 			if files > 1 {
-				return nil, errors.New("Multi bin cue files are not supported")
+				return nil, ErrorMultiBin
 			}
 		case "TRACK":
 			var track track
