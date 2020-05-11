@@ -76,6 +76,20 @@ func cueMapToCu2(cueMap []track, size string) (string, error) {
 		if i == 0 {
 			continue
 		}
+
+		if len(track.Indexes) == 1 {
+			sectors, err := stampToSectors(track.Indexes[0].Stamp)
+			if err != nil {
+				return "", err
+			}
+
+			stamp := sectorsToStamp(int64(sectors + (2 * sectorsPerSecond)))
+			cu2 += fmt.Sprintf("pregap%02d  %s\n", track.ID, stamp)
+			cu2 += fmt.Sprintf("track%02d   %s\n", track.ID, stamp)
+
+			continue
+		}
+
 		cu2 += fmt.Sprintf("pregap%02d  %s\n", track.ID, track.Indexes[1].Stamp)
 		sectors, err := stampToSectors(track.Indexes[1].Stamp)
 		if err != nil {
