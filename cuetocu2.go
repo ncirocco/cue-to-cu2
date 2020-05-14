@@ -68,9 +68,9 @@ func Generate(cuePath string, destination string) error {
 }
 
 func cueMapToCu2(cueMap []track, size string) (string, error) {
-	cu2 := fmt.Sprintf("ntracks %d\n", len(cueMap))
-	cu2 += fmt.Sprintf("size      %s\n", size)
-	cu2 += "data1     00:02:00\n"
+	cu2 := fmt.Sprintf("ntracks %d\r\n", len(cueMap))
+	cu2 += fmt.Sprintf("size      %s\r\n", size)
+	cu2 += "data1     00:02:00\r\n"
 
 	for i, track := range cueMap {
 		if i == 0 {
@@ -84,19 +84,19 @@ func cueMapToCu2(cueMap []track, size string) (string, error) {
 			}
 
 			stamp := sectorsToStamp(int64(sectors + (2 * sectorsPerSecond)))
-			cu2 += fmt.Sprintf("pregap%02d  %s\n", track.ID, stamp)
-			cu2 += fmt.Sprintf("track%02d   %s\n", track.ID, stamp)
+			cu2 += fmt.Sprintf("pregap%02d  %s\r\n", track.ID, stamp)
+			cu2 += fmt.Sprintf("track%02d   %s\r\n", track.ID, stamp)
 
 			continue
 		}
 
-		cu2 += fmt.Sprintf("pregap%02d  %s\n", track.ID, track.Indexes[1].Stamp)
+		cu2 += fmt.Sprintf("pregap%02d  %s\r\n", track.ID, track.Indexes[1].Stamp)
 		sectors, err := stampToSectors(track.Indexes[1].Stamp)
 		if err != nil {
 			return "", err
 		}
 
-		cu2 += fmt.Sprintf("track%02d   %s\n", track.ID, sectorsToStamp(int64(sectors+(2*sectorsPerSecond))))
+		cu2 += fmt.Sprintf("track%02d   %s\r\n", track.ID, sectorsToStamp(int64(sectors+(2*sectorsPerSecond))))
 	}
 
 	sectors, err := stampToSectors(size)
@@ -104,7 +104,7 @@ func cueMapToCu2(cueMap []track, size string) (string, error) {
 		return "", err
 	}
 
-	cu2 += fmt.Sprintf("\ntrk end   %s", sectorsToStamp(int64(sectors+(2*sectorsPerSecond))))
+	cu2 += fmt.Sprintf("\r\ntrk end   %s", sectorsToStamp(int64(sectors+(2*sectorsPerSecond))))
 
 	return cu2, nil
 }
